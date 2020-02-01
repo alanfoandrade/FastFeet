@@ -20,12 +20,20 @@ class RecipientController {
     if (recipients.length === 0)
       return res
         .status(400)
-        .json({ message: 'Nenhum destinatário encontrado' });
+        .json({ message: 'Nenhum destinatário cadastrado' });
 
     return res.json(recipients);
   }
 
   async show(req, res) {
+    const schema = Yup.object().shape({
+      recipientId: Yup.number().required()
+    });
+
+    if (!(await schema.isValid(req.params))) {
+      return res.status(400).json({ message: 'Erro de validação' });
+    }
+
     const recipient = await Recipient.findByPk(req.params.recipientId, {
       attributes: [
         'id',
@@ -40,7 +48,7 @@ class RecipientController {
     });
 
     if (!recipient)
-      return res.status(400).json({ message: 'Destinatário não encontrado' });
+      return res.status(400).json({ message: 'Destinatário não cadastrado' });
 
     return res.json(recipient);
   }
@@ -75,7 +83,15 @@ class RecipientController {
   }
 
   async update(req, res) {
-    const schema = Yup.object().shape({
+    const schemaParams = Yup.object().shape({
+      recipientId: Yup.number().required()
+    });
+
+    if (!(await schemaParams.isValid(req.params))) {
+      return res.status(400).json({ message: 'Erro de validação' });
+    }
+
+    const schemaBody = Yup.object().shape({
       name: Yup.string(),
       street: Yup.string(),
       number: Yup.number(),
@@ -85,14 +101,14 @@ class RecipientController {
       zipcode: Yup.number()
     });
 
-    if (!(await schema.isValid(req.body))) {
+    if (!(await schemaBody.isValid(req.body))) {
       return res.status(400).json({ message: 'Erro de validação' });
     }
 
     const recipient = await Recipient.findByPk(req.params.recipientId);
 
     if (!recipient)
-      return res.status(400).json({ message: 'Destinatário não encontrado' });
+      return res.status(400).json({ message: 'Destinatário não cadastrado' });
 
     const {
       id,
@@ -109,10 +125,18 @@ class RecipientController {
   }
 
   async destroy(req, res) {
+    const schema = Yup.object().shape({
+      recipientId: Yup.number().required()
+    });
+
+    if (!(await schema.isValid(req.params))) {
+      return res.status(400).json({ message: 'Erro de validação' });
+    }
+
     const recipient = await Recipient.findByPk(req.params.recipientId);
 
     if (!recipient)
-      return res.status(400).json({ message: 'Destinatário não encontrado' });
+      return res.status(400).json({ message: 'Destinatário não cadastrado' });
 
     await recipient.destroy();
 

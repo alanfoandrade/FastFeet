@@ -9,18 +9,26 @@ class UserController {
     });
 
     if (users.length === 0)
-      return res.status(400).json({ message: 'Nenhum usuário encontrado' });
+      return res.status(400).json({ message: 'Nenhum usuário cadastrado' });
 
     return res.json(users);
   }
 
   async show(req, res) {
+    const schema = Yup.object().shape({
+      userId: Yup.number().required()
+    });
+
+    if (!(await schema.isValid(req.params))) {
+      return res.status(400).json({ message: 'Erro de validação' });
+    }
+
     const user = await User.findByPk(req.params.userId, {
       attributes: ['id', 'name', 'email']
     });
 
     if (!user)
-      return res.status(400).json({ message: 'Usuário não encontrado' });
+      return res.status(400).json({ message: 'Usuário não cadastrado' });
 
     return res.json(user);
   }
@@ -38,6 +46,15 @@ class UserController {
 
     if (!(await schema.isValid(req.body))) {
       return res.status(400).json({ message: 'Erro de validação' });
+    }
+
+    // Verifica se email já está cadastrado
+    const emailExists = await User.findOne({
+      where: { email: req.body.email }
+    });
+
+    if (emailExists) {
+      return res.status(400).json({ message: 'Email já cadastrado' });
     }
 
     const { id, name, email } = await User.create(req.body);
@@ -93,7 +110,7 @@ class UserController {
     const user = await User.findByPk(req.userId);
 
     if (!user)
-      return res.status(400).json({ message: 'Usuário não encontrado' });
+      return res.status(400).json({ message: 'Usuário não cadastrado' });
 
     await user.destroy();
 
