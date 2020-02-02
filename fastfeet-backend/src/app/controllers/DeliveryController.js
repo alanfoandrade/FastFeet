@@ -1,6 +1,13 @@
 import * as Yup from 'yup';
 import { Op } from 'sequelize';
-import { setHours, getHours, startOfDay, isBefore, isAfter } from 'date-fns';
+import {
+  setHours,
+  setMinutes,
+  getHours,
+  startOfDay,
+  isBefore,
+  isAfter
+} from 'date-fns';
 
 import Order from '../models/Order';
 import File from '../models/File';
@@ -85,14 +92,13 @@ class DeliveryController {
         .status(400)
         .json({ message: 'Encomenda não cadastrada, finalizada ou cancelada' });
 
-    // Considerando o timezone -3:00
     const timeNow = new Date();
 
     // Início do horário comercial 08:00
-    const beginWork = setHours(timeNow, 1);
+    const beginWork = setMinutes(setHours(timeNow, 8), 0);
 
     // Encerramento do horário comercial 18:00
-    const stopWork = setHours(timeNow, 18);
+    const stopWork = setMinutes(setHours(timeNow, 18), 0);
 
     // Verificando se agora é horário comercial
     if (isBefore(timeNow, beginWork) || isAfter(timeNow, stopWork)) {
