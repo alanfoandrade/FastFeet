@@ -74,12 +74,15 @@ class DeliveryController {
     const order = await Order.findOne({
       where: {
         id: req.params.orderId,
-        canceled_at: null
+        canceled_at: null,
+        end_date: null
       }
     });
 
     if (!order)
-      return res.status(400).json({ message: 'Encomenda não cadastrada' });
+      return res
+        .status(400)
+        .json({ message: 'Encomenda não cadastrada, finalizada ou cancelada' });
 
     // TODO: VALIDAR HORARIO ENTRE 08:00 E 18:00 - VALIDAR 5 RETIRADAS POR DIA
     order.start_date = new Date();
@@ -172,7 +175,7 @@ class DeliveryController {
         .status(400)
         .json({ message: 'Entrega não cadastrada ou cancelada' });
 
-    order.canceled_at = new Date();
+    order.start_date = null;
 
     await order.save();
 

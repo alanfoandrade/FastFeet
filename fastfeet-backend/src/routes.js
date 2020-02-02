@@ -10,6 +10,7 @@ import DelivererController from './app/controllers/DelivererController';
 import OrderController from './app/controllers/OrderController';
 import FileController from './app/controllers/FileController';
 import DeliveryController from './app/controllers/DeliveryController';
+import DeliveryProblemController from './app/controllers/DeliveryProblemController';
 
 import authMiddleware from './app/middlewares/authMiddleware';
 
@@ -29,6 +30,17 @@ routes.post('/users', UserController.store);
 // Recipient Controller
 routes.get('/recipients', RecipientController.index);
 routes.get('/recipients/:recipientId', RecipientController.show);
+
+// Delivery Controller
+routes.get('/delivery/:delivererId', DeliveryController.index);
+routes.get('/delivery/:delivererId/delivered', DeliveryController.show);
+routes.post('/delivery/:orderId', DeliveryController.store);
+routes.patch('/delivery/:orderId', DeliveryController.update);
+routes.delete('/delivery/:orderId', DeliveryController.destroy);
+
+// DeliveryProblem Controller
+routes.post('/delivery/:orderId/problems', DeliveryProblemController.store);
+routes.patch('/delivery/:problemId/problems', DeliveryProblemController.update);
 
 // Authenticated Routes
 routes.use(authMiddleware);
@@ -59,11 +71,12 @@ routes.post('/orders', OrderController.store);
 routes.patch('/orders/:orderId', OrderController.update);
 routes.delete('/orders/:orderId', OrderController.destroy);
 
-// Delivery Controller
-routes.get('/delivery/:delivererId', DeliveryController.index);
-routes.get('/delivery/:delivererId/delivered', DeliveryController.show);
-routes.post('/delivery/:orderId', DeliveryController.store);
-routes.patch('/delivery/:orderId', DeliveryController.update);
-routes.delete('/delivery/:orderId', DeliveryController.destroy);
+// DeliveryProblem Controller
+routes.get('/delivery/list/problems', DeliveryProblemController.index);
+routes.get('/delivery/:orderId/problems', DeliveryProblemController.show);
+routes.delete(
+  '/delivery/:problemId/cancel-order',
+  DeliveryProblemController.destroy
+);
 
 export default routes;

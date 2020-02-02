@@ -120,7 +120,7 @@ class OrderController {
     const {
       id,
       recipient_id,
-      deliverer_id,
+      order_id,
       signature_id,
       product,
       canceled_at,
@@ -131,7 +131,7 @@ class OrderController {
     return res.json({
       id,
       recipient_id,
-      deliverer_id,
+      order_id,
       signature_id,
       product,
       canceled_at,
