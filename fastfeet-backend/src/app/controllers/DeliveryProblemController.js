@@ -157,9 +157,9 @@ class DeliveryProblemController {
 
     order.canceled_at = new Date();
 
-    // TODO: EMAIL DE AVISO DE CANCELAMENTO
-
     await order.save();
+
+    // TODO: EMAIL DE AVISO DE CANCELAMENTO
 
     return res.json({ message: 'Encomenda cancelada com sucesso' });
   }

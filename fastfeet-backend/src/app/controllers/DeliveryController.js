@@ -1,5 +1,6 @@
-import { Op } from 'sequelize';
 import * as Yup from 'yup';
+import { Op } from 'sequelize';
+import { setHours, getHours, startOfDay, isBefore, isAfter } from 'date-fns';
 
 import Order from '../models/Order';
 import File from '../models/File';
@@ -84,7 +85,39 @@ class DeliveryController {
         .status(400)
         .json({ message: 'Encomenda não cadastrada, finalizada ou cancelada' });
 
-    // TODO: VALIDAR HORARIO ENTRE 08:00 E 18:00 - VALIDAR 5 RETIRADAS POR DIA
+    // Considerando o timezone -3:00
+    const timeNow = new Date();
+
+    // Início do horário comercial 08:00
+    const beginWork = setHours(timeNow, 1);
+
+    // Encerramento do horário comercial 18:00
+    const stopWork = setHours(timeNow, 18);
+
+    // Verificando se agora é horário comercial
+    if (isBefore(timeNow, beginWork) || isAfter(timeNow, stopWork)) {
+      return res.status(400).json({
+        message: `Horário inválido, retiradas apenas entre ${getHours(
+          beginWork
+        )} e ${getHours(stopWork)}`
+      });
+    }
+
+    const withdrawCount = await Order.findAndCountAll({
+      where: {
+        deliverer_id: order.deliverer_id,
+        start_date: {
+          [Op.gte]: startOfDay(timeNow)
+        }
+      }
+    });
+
+    if (withdrawCount.count >= 5) {
+      return res
+        .status(400)
+        .json({ message: 'Limite de retiradas diárias atingido' });
+    }
+
     order.start_date = new Date();
 
     const { id, recipient_id, product, start_date } = await order.save();
@@ -93,7 +126,8 @@ class DeliveryController {
       id,
       recipient_id,
       product,
-      start_date
+      start_date,
+      message: `Retirada ${withdrawCount.count + 1} de 5 diárias`
     });
   }
 

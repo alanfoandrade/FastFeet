@@ -71,6 +71,8 @@ class OrderController {
       req.body
     );
 
+    // TODO: EMAIL DE AVISO DE ENCOMENDA
+
     return res.json({
       id,
       recipient_id,
@@ -164,6 +166,8 @@ class OrderController {
     order.canceled_at = new Date();
 
     await order.save();
+
+    // TODO: EMAIL DE AVISO DE CANCELAMENTO
 
     return res.json({ message: 'Encomenda cancelada com sucesso' });
   }
