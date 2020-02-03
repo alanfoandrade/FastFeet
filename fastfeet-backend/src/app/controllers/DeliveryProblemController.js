@@ -2,6 +2,11 @@ import * as Yup from 'yup';
 
 import Order from '../models/Order';
 import DeliveryProblem from '../models/DeliveryProblem';
+import Deliverer from '../models/Deliverer';
+import Recipient from '../models/Recipient';
+
+import Queue from '../../lib/Queue';
+import CancellationMail from '../jobs/CancellationMail';
 
 class DeliveryProblemController {
   async index(req, res) {
@@ -10,6 +15,7 @@ class DeliveryProblemController {
       include: [
         {
           model: Order,
+          as: 'order',
           attributes: [
             'id',
             'recipient_id',
@@ -45,6 +51,7 @@ class DeliveryProblemController {
       include: [
         {
           model: Order,
+          as: 'order',
           attributes: [
             'id',
             'recipient_id',
@@ -147,7 +154,19 @@ class DeliveryProblemController {
       where: {
         id: problem.order_id,
         canceled_at: null
-      }
+      },
+      include: [
+        {
+          model: Deliverer,
+          as: 'deliverer',
+          attributes: ['name', 'email']
+        },
+        {
+          model: Recipient,
+          as: 'recipient',
+          attributes: ['name', 'street', 'number', 'city', 'state', 'zipcode']
+        }
+      ]
     });
 
     if (!order)
@@ -159,7 +178,12 @@ class DeliveryProblemController {
 
     await order.save();
 
-    // TODO: EMAIL DE AVISO DE CANCELAMENTO
+    const { recipient, deliverer } = order;
+
+    await Queue.add(CancellationMail.key, {
+      deliverer,
+      recipient
+    });
 
     return res.json({ message: 'Encomenda cancelada com sucesso' });
   }

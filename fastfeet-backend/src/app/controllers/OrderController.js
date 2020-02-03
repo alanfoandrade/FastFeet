@@ -2,6 +2,12 @@ import * as Yup from 'yup';
 
 import Order from '../models/Order';
 import File from '../models/File';
+import Deliverer from '../models/Deliverer';
+import Recipient from '../models/Recipient';
+
+import Queue from '../../lib/Queue';
+import NewOrderMail from '../jobs/NewOrderMail';
+import CancellationMail from '../jobs/CancellationMail';
 
 class OrderController {
   async index(req, res) {
@@ -71,7 +77,14 @@ class OrderController {
       req.body
     );
 
-    // TODO: EMAIL DE AVISO DE ENCOMENDA
+    const deliverer = await Deliverer.findByPk(deliverer_id);
+
+    const recipient = await Recipient.findByPk(recipient_id);
+
+    await Queue.add(NewOrderMail.key, {
+      deliverer,
+      recipient
+    });
 
     return res.json({
       id,
@@ -108,7 +121,7 @@ class OrderController {
 
     const { signature_id: newSignature } = req.body;
 
-    // Caso for alterar avatar, verifica se avatar existe no banco
+    // Caso for alterar assinatura, verifica se assinatura existe no banco
     if (newSignature && newSignature !== order.signature_id) {
       const fileExists = await File.findOne({
         where: { id: newSignature }
@@ -140,6 +153,8 @@ class OrderController {
       start_date,
       end_date
     });
+
+    // TODO: TESTAR SE É POSSÍVEL ALTERAR START_DATE E END_DATE
   }
 
   async destroy(req, res) {
@@ -155,7 +170,19 @@ class OrderController {
       where: {
         id: req.params.orderId,
         canceled_at: null
-      }
+      },
+      include: [
+        {
+          model: Deliverer,
+          as: 'deliverer',
+          attributes: ['name', 'email']
+        },
+        {
+          model: Recipient,
+          as: 'recipient',
+          attributes: ['name', 'street', 'number', 'city', 'state', 'zipcode']
+        }
+      ]
     });
 
     if (!order)
@@ -167,7 +194,12 @@ class OrderController {
 
     await order.save();
 
-    // TODO: EMAIL DE AVISO DE CANCELAMENTO
+    const { recipient, deliverer } = order;
+
+    await Queue.add(CancellationMail.key, {
+      deliverer,
+      recipient
+    });
 
     return res.json({ message: 'Encomenda cancelada com sucesso' });
   }
