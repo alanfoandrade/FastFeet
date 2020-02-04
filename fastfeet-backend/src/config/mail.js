@@ -5,9 +5,9 @@ export default {
   secure: false,
   auth: {
     user: process.env.MAIL_USER,
-    pass: process.env.MAIL_PASS
+    pass: process.env.MAIL_PASS,
   },
   default: {
-    from: 'Transportadora FastFeet <noreply@fastfeet.com>'
-  }
+    from: 'Transportadora FastFeet <noreply@fastfeet.com>',
+  },
 };

@@ -5,10 +5,10 @@ class DeliveryProblem extends Model {
   static init(sequelize) {
     super.init(
       {
-        description: Sequelize.STRING
+        description: Sequelize.STRING,
       },
       {
-        sequelize
+        sequelize,
       }
     );
 

@@ -6,11 +6,11 @@ module.exports = {
       // Relacionamento com a tabela de Arquivos
       references: { model: 'files', key: 'id' },
       onUpdate: 'CASCADE',
-      onDelete: 'SET NULL'
+      onDelete: 'SET NULL',
     });
   },
 
   down: queryInterface => {
     return queryInterface.removeColumn('deliverers', 'avatar_id');
-  }
+  },
 };

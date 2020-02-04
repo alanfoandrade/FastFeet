@@ -15,8 +15,8 @@ class RecipientController {
         'compl',
         'state',
         'city',
-        'zipcode'
-      ]
+        'zipcode',
+      ],
     });
 
     if (recipients.length === 0)
@@ -31,7 +31,7 @@ class RecipientController {
   async show(req, res) {
     // Validação do id passado via params
     const schema = Yup.object().shape({
-      recipientId: Yup.number().required()
+      recipientId: Yup.number().required(),
     });
 
     if (!(await schema.isValid(req.params))) {
@@ -50,8 +50,8 @@ class RecipientController {
         'compl',
         'state',
         'city',
-        'zipcode'
-      ]
+        'zipcode',
+      ],
     });
 
     if (!recipient)
@@ -70,7 +70,7 @@ class RecipientController {
       compl: Yup.string().required(),
       state: Yup.string().required(),
       city: Yup.string().required(),
-      zipcode: Yup.number().required()
+      zipcode: Yup.number().required(),
     });
 
     if (!(await schema.isValid(req.body))) {
@@ -85,7 +85,7 @@ class RecipientController {
       compl,
       state,
       city,
-      zipcode
+      zipcode,
     } = await Recipient.create(req.body);
 
     return res.json({ id, name, street, number, compl, state, city, zipcode });
@@ -95,7 +95,7 @@ class RecipientController {
   async update(req, res) {
     // Validação do id passado via params
     const schemaParams = Yup.object().shape({
-      recipientId: Yup.number().required()
+      recipientId: Yup.number().required(),
     });
 
     if (!(await schemaParams.isValid(req.params))) {
@@ -110,7 +110,7 @@ class RecipientController {
       compl: Yup.string(),
       state: Yup.string(),
       city: Yup.string(),
-      zipcode: Yup.number()
+      zipcode: Yup.number(),
     });
 
     if (!(await schemaBody.isValid(req.body))) {
@@ -133,7 +133,7 @@ class RecipientController {
       compl,
       state,
       city,
-      zipcode
+      zipcode,
     } = await recipient.update(req.body);
 
     return res.json({ id, name, street, number, compl, state, city, zipcode });
@@ -143,7 +143,7 @@ class RecipientController {
   async destroy(req, res) {
     // Validação do id passado via params
     const schema = Yup.object().shape({
-      recipientId: Yup.number().required()
+      recipientId: Yup.number().required(),
     });
 
     if (!(await schema.isValid(req.params))) {

@@ -13,9 +13,9 @@ class DelivererController {
         {
           model: File,
           as: 'avatar',
-          attributes: ['name', 'path', 'url']
-        }
-      ]
+          attributes: ['name', 'path', 'url'],
+        },
+      ],
     });
 
     if (deliverers.length === 0)
@@ -28,7 +28,7 @@ class DelivererController {
   async show(req, res) {
     // Validação do id passado via params
     const schema = Yup.object().shape({
-      delivererId: Yup.number().required()
+      delivererId: Yup.number().required(),
     });
 
     if (!(await schema.isValid(req.params))) {
@@ -44,9 +44,9 @@ class DelivererController {
         {
           model: File,
           as: 'avatar',
-          attributes: ['name', 'path', 'url']
-        }
-      ]
+          attributes: ['name', 'path', 'url'],
+        },
+      ],
     });
 
     if (!deliverer)
@@ -62,7 +62,7 @@ class DelivererController {
       name: Yup.string().required(),
       email: Yup.string()
         .email()
-        .required()
+        .required(),
     });
 
     if (!(await schema.isValid(req.body))) {
@@ -73,7 +73,7 @@ class DelivererController {
 
     // Verifica se email já está cadastrado
     const emailExists = await Deliverer.findOne({
-      where: { email: newEmail }
+      where: { email: newEmail },
     });
 
     if (emailExists) {
@@ -89,7 +89,7 @@ class DelivererController {
   async update(req, res) {
     // Validação do id passado via params
     const schemaParams = Yup.object().shape({
-      delivererId: Yup.number().required()
+      delivererId: Yup.number().required(),
     });
 
     if (!(await schemaParams.isValid(req.params))) {
@@ -100,7 +100,7 @@ class DelivererController {
     const schemaBody = Yup.object().shape({
       name: Yup.string(),
       avatar_id: Yup.number(),
-      email: Yup.string().email()
+      email: Yup.string().email(),
     });
 
     if (!(await schemaBody.isValid(req.body))) {
@@ -119,7 +119,7 @@ class DelivererController {
     // Caso for alterar email, verifica se novo email já está cadastrado
     if (newEmail && newEmail !== deliverer.email) {
       const emailExists = await Deliverer.findOne({
-        where: { email: newEmail }
+        where: { email: newEmail },
       });
 
       if (emailExists) {
@@ -145,7 +145,7 @@ class DelivererController {
   async destroy(req, res) {
     // Validação do id passado via params
     const schema = Yup.object().shape({
-      delivererId: Yup.number().required()
+      delivererId: Yup.number().required(),
     });
 
     if (!(await schema.isValid(req.params))) {

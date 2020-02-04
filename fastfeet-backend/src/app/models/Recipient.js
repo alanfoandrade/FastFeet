@@ -11,10 +11,10 @@ class Recipient extends Model {
         compl: Sequelize.STRING,
         state: Sequelize.STRING,
         city: Sequelize.STRING,
-        zipcode: Sequelize.INTEGER
+        zipcode: Sequelize.INTEGER,
       },
       {
-        sequelize
+        sequelize,
       }
     );
 

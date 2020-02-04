@@ -1,12 +1,12 @@
 import Sequelize from 'sequelize';
-import databaseConfig from '../config/database';
 
-import User from '../app/models/User';
-import Recipient from '../app/models/Recipient';
 import Deliverer from '../app/models/Deliverer';
+import DeliveryProblem from '../app/models/DeliveryProblem';
 import File from '../app/models/File';
 import Order from '../app/models/Order';
-import DeliveryProblem from '../app/models/DeliveryProblem';
+import Recipient from '../app/models/Recipient';
+import User from '../app/models/User';
+import databaseConfig from '../config/database';
 
 const models = [User, Recipient, Deliverer, File, Order, DeliveryProblem];
 

@@ -1,16 +1,16 @@
-import * as Yup from 'yup';
-import { Op } from 'sequelize';
 import {
   setHours,
   setMinutes,
   getHours,
   startOfDay,
   isBefore,
-  isAfter
+  isAfter,
 } from 'date-fns';
+import { Op } from 'sequelize';
+import * as Yup from 'yup';
 
-import Order from '../models/Order';
 import File from '../models/File';
+import Order from '../models/Order';
 
 // Controller de Entregas
 class DeliveryController {
@@ -18,7 +18,7 @@ class DeliveryController {
   async index(req, res) {
     // Validação do id passado via params
     const schema = Yup.object().shape({
-      delivererId: Yup.number().required()
+      delivererId: Yup.number().required(),
     });
 
     if (!(await schema.isValid(req.params))) {
@@ -32,9 +32,9 @@ class DeliveryController {
       where: {
         deliverer_id: delivererId,
         canceled_at: null,
-        end_date: null
+        end_date: null,
       },
-      attributes: ['id', 'recipient_id', 'product', 'start_date']
+      attributes: ['id', 'recipient_id', 'product', 'start_date'],
     });
 
     if (orders.length === 0)
@@ -47,7 +47,7 @@ class DeliveryController {
   async show(req, res) {
     // Validação do id passado via params
     const schema = Yup.object().shape({
-      delivererId: Yup.number().required()
+      delivererId: Yup.number().required(),
     });
 
     if (!(await schema.isValid(req.params))) {
@@ -62,8 +62,8 @@ class DeliveryController {
         deliverer_id: delivererId,
         canceled_at: null,
         end_date: {
-          [Op.not]: null
-        }
+          [Op.not]: null,
+        },
       },
       attributes: [
         'id',
@@ -71,8 +71,8 @@ class DeliveryController {
         'signature_id',
         'product',
         'start_date',
-        'end_date'
-      ]
+        'end_date',
+      ],
     });
 
     if (orders.length === 0)
@@ -85,7 +85,7 @@ class DeliveryController {
   async store(req, res) {
     // Validação do id passado via params
     const schema = Yup.object().shape({
-      orderId: Yup.number().required()
+      orderId: Yup.number().required(),
     });
 
     if (!(await schema.isValid(req.params))) {
@@ -99,8 +99,8 @@ class DeliveryController {
       where: {
         id: orderId,
         canceled_at: null,
-        end_date: null
-      }
+        end_date: null,
+      },
     });
 
     if (!order)
@@ -122,7 +122,7 @@ class DeliveryController {
       return res.status(400).json({
         message: `Horário inválido, retiradas apenas entre ${getHours(
           beginWork
-        )} e ${getHours(stopWork)}`
+        )} e ${getHours(stopWork)}`,
       });
     }
 
@@ -131,9 +131,9 @@ class DeliveryController {
       where: {
         deliverer_id: order.deliverer_id,
         start_date: {
-          [Op.gte]: startOfDay(timeNow)
-        }
-      }
+          [Op.gte]: startOfDay(timeNow),
+        },
+      },
     });
 
     // Limite de 5 retiradas diárias
@@ -153,7 +153,7 @@ class DeliveryController {
       recipient_id,
       product,
       start_date,
-      message: `Retirada ${withdrawCount.count + 1} de 5 diárias`
+      message: `Retirada ${withdrawCount.count + 1} de 5 diárias`,
     });
   }
 
@@ -161,7 +161,7 @@ class DeliveryController {
   async update(req, res) {
     // Validação do id passado via params
     const schemaParams = Yup.object().shape({
-      orderId: Yup.number().required()
+      orderId: Yup.number().required(),
     });
 
     if (!(await schemaParams.isValid(req.params))) {
@@ -170,7 +170,7 @@ class DeliveryController {
 
     // Validação dos dados do body
     const schemaBody = Yup.object().shape({
-      signature_id: Yup.number().required()
+      signature_id: Yup.number().required(),
     });
 
     if (!(await schemaBody.isValid(req.body))) {
@@ -190,7 +190,7 @@ class DeliveryController {
     // Verifica se assinatura existe no banco
     if (newSignature && newSignature !== order.signature_id) {
       const fileExists = await File.findOne({
-        where: { id: newSignature }
+        where: { id: newSignature },
       });
 
       if (!fileExists) {
@@ -204,10 +204,10 @@ class DeliveryController {
       signature_id,
       product,
       start_date,
-      end_date
+      end_date,
     } = await order.update({
       ...req.body,
-      end_date: new Date()
+      end_date: new Date(),
     });
 
     return res.json({
@@ -216,7 +216,7 @@ class DeliveryController {
       signature_id,
       product,
       start_date,
-      end_date
+      end_date,
     });
   }
 

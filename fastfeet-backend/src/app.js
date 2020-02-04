@@ -1,14 +1,13 @@
+import * as Sentry from '@sentry/node';
+import express from 'express';
 import { resolve } from 'path';
 import 'dotenv/config';
-
-import express from 'express';
-import * as Sentry from '@sentry/node';
 import Youch from 'youch';
 
 import 'express-async-errors';
 
-import routes from './routes';
 import sentryConfig from './config/sentry';
+import routes from './routes';
 
 import './database';
 
@@ -18,16 +17,17 @@ class App {
     // Cria servidor express
     this.server = express();
 
-    // Conexão do módulo de monitoramento de excessões Sentry
+    // Conexão do módulo de monitoramento de exceções Sentry
     Sentry.init(sentryConfig);
 
     this.middlewares();
     this.routes();
+    // Método de tratamento de exceções
     this.exceptionHandler();
   }
 
   middlewares() {
-    // Middleware de monitoramento de excessões do Sentry
+    // Middleware de monitoramento de exceções do Sentry
     this.server.use(Sentry.Handlers.requestHandler());
     // Middleware do módulo de upload de arquivos Multter
     this.server.use(
@@ -43,8 +43,9 @@ class App {
     this.server.use(Sentry.Handlers.errorHandler());
   }
 
-  // Tatamento de excessões e retorno em JSON usando Youch
+  // Tatamento de exceções e retorno em JSON usando Youch
   exceptionHandler() {
+    // Middleware para captura de exceções
     this.server.use(async (err, req, res, next) => {
       if (process.env.NODE_ENV === 'development') {
         const errors = await new Youch(err, req).toJSON();

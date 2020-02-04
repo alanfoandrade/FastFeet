@@ -22,8 +22,8 @@ class CancellationMail {
         number: recipient.number,
         city: recipient.city,
         state: recipient.state,
-        zipcode: recipient.zipcode
-      }
+        zipcode: recipient.zipcode,
+      },
     });
   }
 }

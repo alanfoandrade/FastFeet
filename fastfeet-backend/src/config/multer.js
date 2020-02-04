@@ -1,5 +1,5 @@
-import multer from 'multer';
 import crypto from 'crypto';
+import multer from 'multer';
 import { extname, resolve } from 'path';
 
 // Configuração do módulo de uploads utilizada em routes.js
@@ -12,6 +12,6 @@ export default {
 
         return cb(null, res.toString('hex') + extname(file.originalname));
       });
-    }
-  })
+    },
+  }),
 };

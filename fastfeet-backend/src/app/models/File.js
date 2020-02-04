@@ -12,11 +12,11 @@ class File extends Model {
           type: Sequelize.VIRTUAL,
           get() {
             return `${process.env.APP_URL}/files/${this.path}`;
-          }
-        }
+          },
+        },
       },
       {
-        sequelize
+        sequelize,
       }
     );
 

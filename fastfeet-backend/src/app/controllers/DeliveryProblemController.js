@@ -1,12 +1,11 @@
 import * as Yup from 'yup';
 
-import Order from '../models/Order';
-import DeliveryProblem from '../models/DeliveryProblem';
-import Deliverer from '../models/Deliverer';
-import Recipient from '../models/Recipient';
-
 import Queue from '../../lib/Queue';
 import CancellationMail from '../jobs/CancellationMail';
+import Deliverer from '../models/Deliverer';
+import DeliveryProblem from '../models/DeliveryProblem';
+import Order from '../models/Order';
+import Recipient from '../models/Recipient';
 
 // Controller de Problemas na Entrega
 class DeliveryProblemController {
@@ -26,10 +25,10 @@ class DeliveryProblemController {
             'product',
             'canceled_at',
             'start_date',
-            'end_date'
-          ]
-        }
-      ]
+            'end_date',
+          ],
+        },
+      ],
     });
 
     if (deliveries.length === 0)
@@ -42,7 +41,7 @@ class DeliveryProblemController {
   async show(req, res) {
     // Validação do id passado via params
     const schema = Yup.object().shape({
-      orderId: Yup.number().required()
+      orderId: Yup.number().required(),
     });
 
     if (!(await schema.isValid(req.params))) {
@@ -67,10 +66,10 @@ class DeliveryProblemController {
             'product',
             'canceled_at',
             'start_date',
-            'end_date'
-          ]
-        }
-      ]
+            'end_date',
+          ],
+        },
+      ],
     });
 
     if (problems.length === 0)
@@ -85,7 +84,7 @@ class DeliveryProblemController {
   async store(req, res) {
     // Validação do id passado via params
     const schema = Yup.object().shape({
-      orderId: Yup.number().required()
+      orderId: Yup.number().required(),
     });
 
     if (!(await schema.isValid(req.params))) {
@@ -98,8 +97,8 @@ class DeliveryProblemController {
     const order = await Order.findOne({
       where: {
         id: orderId,
-        canceled_at: null
-      }
+        canceled_at: null,
+      },
     });
 
     if (!order)
@@ -109,13 +108,13 @@ class DeliveryProblemController {
 
     const { id, description, order_id } = await DeliveryProblem.create({
       ...req.body,
-      order_id: orderId
+      order_id: orderId,
     });
 
     return res.json({
       id,
       description,
-      order_id
+      order_id,
     });
   }
 
@@ -123,7 +122,7 @@ class DeliveryProblemController {
   async update(req, res) {
     // Validação do id passado via params
     const schema = Yup.object().shape({
-      problemId: Yup.number().required()
+      problemId: Yup.number().required(),
     });
 
     if (!(await schema.isValid(req.params))) {
@@ -145,7 +144,7 @@ class DeliveryProblemController {
     return res.json({
       id,
       description,
-      order_id
+      order_id,
     });
   }
 
@@ -153,7 +152,7 @@ class DeliveryProblemController {
   async destroy(req, res) {
     // Validação do id passado via params
     const schema = Yup.object().shape({
-      problemId: Yup.number().required()
+      problemId: Yup.number().required(),
     });
 
     if (!(await schema.isValid(req.params))) {
@@ -174,20 +173,20 @@ class DeliveryProblemController {
     const order = await Order.findOne({
       where: {
         id: problem.order_id,
-        canceled_at: null
+        canceled_at: null,
       },
       include: [
         {
           model: Deliverer,
           as: 'deliverer',
-          attributes: ['name', 'email']
+          attributes: ['name', 'email'],
         },
         {
           model: Recipient,
           as: 'recipient',
-          attributes: ['name', 'street', 'number', 'city', 'state', 'zipcode']
-        }
-      ]
+          attributes: ['name', 'street', 'number', 'city', 'state', 'zipcode'],
+        },
+      ],
     });
 
     if (!order)
@@ -205,7 +204,7 @@ class DeliveryProblemController {
     // Envia email avisando o entregador do cancelamento
     await Queue.add(CancellationMail.key, {
       deliverer,
-      recipient
+      recipient,
     });
 
     return res.json({ message: 'Encomenda cancelada com sucesso' });

@@ -7,7 +7,7 @@ class UserController {
   // Lista todos usuários (admin) cadastrados
   async index(req, res) {
     const users = await User.findAll({
-      attributes: ['id', 'name', 'email']
+      attributes: ['id', 'name', 'email'],
     });
 
     if (users.length === 0)
@@ -20,7 +20,7 @@ class UserController {
   async show(req, res) {
     // Validação do id passado via params
     const schema = Yup.object().shape({
-      userId: Yup.number().required()
+      userId: Yup.number().required(),
     });
 
     if (!(await schema.isValid(req.params))) {
@@ -31,7 +31,7 @@ class UserController {
 
     // Busca usuário com id passado via params
     const user = await User.findByPk(userId, {
-      attributes: ['id', 'name', 'email']
+      attributes: ['id', 'name', 'email'],
     });
 
     if (!user)
@@ -50,7 +50,7 @@ class UserController {
         .required(),
       password: Yup.string()
         .required()
-        .min(6)
+        .min(6),
     });
 
     if (!(await schema.isValid(req.body))) {
@@ -61,7 +61,7 @@ class UserController {
 
     // Verifica se email já está cadastrado
     const emailExists = await User.findOne({
-      where: { email: newEmail }
+      where: { email: newEmail },
     });
 
     if (emailExists) {
@@ -87,7 +87,7 @@ class UserController {
         ),
       confirmPassword: Yup.string().when('password', (password, field) =>
         password ? field.required().oneOf([Yup.ref('password')]) : field
-      )
+      ),
     });
 
     if (!(await schema.isValid(req.body))) {
@@ -102,7 +102,7 @@ class UserController {
     // Caso for alterar email, verifica se novo email já está cadastrado
     if (newEmail && newEmail !== user.email) {
       const emailExists = await User.findOne({
-        where: { email: newEmail }
+        where: { email: newEmail },
       });
 
       if (emailExists) {

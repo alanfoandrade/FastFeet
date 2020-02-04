@@ -1,13 +1,12 @@
 import * as Yup from 'yup';
 
-import Order from '../models/Order';
-import File from '../models/File';
-import Deliverer from '../models/Deliverer';
-import Recipient from '../models/Recipient';
-
 import Queue from '../../lib/Queue';
-import NewOrderMail from '../jobs/NewOrderMail';
 import CancellationMail from '../jobs/CancellationMail';
+import NewOrderMail from '../jobs/NewOrderMail';
+import Deliverer from '../models/Deliverer';
+import File from '../models/File';
+import Order from '../models/Order';
+import Recipient from '../models/Recipient';
 
 // Cadastro de Encomendas
 class OrderController {
@@ -21,15 +20,15 @@ class OrderController {
         'product',
         'canceled_at',
         'start_date',
-        'end_date'
+        'end_date',
       ],
       include: [
         {
           model: File,
           as: 'signature',
-          attributes: ['name', 'path', 'url']
-        }
-      ]
+          attributes: ['name', 'path', 'url'],
+        },
+      ],
     });
 
     if (orders.length === 0)
@@ -42,7 +41,7 @@ class OrderController {
   async show(req, res) {
     // Validação do id passado via params
     const schema = Yup.object().shape({
-      orderId: Yup.number().required()
+      orderId: Yup.number().required(),
     });
 
     if (!(await schema.isValid(req.params))) {
@@ -61,15 +60,15 @@ class OrderController {
         'product',
         'canceled_at',
         'start_date',
-        'end_date'
+        'end_date',
       ],
       include: [
         {
           model: File,
           as: 'signature',
-          attributes: ['name', 'path', 'url']
-        }
-      ]
+          attributes: ['name', 'path', 'url'],
+        },
+      ],
     });
 
     if (!order)
@@ -88,7 +87,7 @@ class OrderController {
       product: Yup.string().required(),
       canceled_at: Yup.date(),
       start_date: Yup.date(),
-      end_date: Yup.date()
+      end_date: Yup.date(),
     });
 
     if (!(await schema.isValid(req.body))) {
@@ -98,7 +97,7 @@ class OrderController {
     const {
       deliverer_id: newDeliverer,
       recipient_id: newRecipient,
-      signature_id: newSignature
+      signature_id: newSignature,
     } = req.body;
 
     // Busca entregador com id passado via body
@@ -129,14 +128,14 @@ class OrderController {
     // Envia email avisando o entregador da nova entrega
     await Queue.add(NewOrderMail.key, {
       deliverer,
-      recipient
+      recipient,
     });
 
     return res.json({
       id,
       recipient_id,
       deliverer_id,
-      product
+      product,
     });
   }
 
@@ -144,7 +143,7 @@ class OrderController {
   async update(req, res) {
     // Validação do id passado via params
     const schemaParams = Yup.object().shape({
-      orderId: Yup.number().required()
+      orderId: Yup.number().required(),
     });
 
     if (!(await schemaParams.isValid(req.params))) {
@@ -156,7 +155,7 @@ class OrderController {
       recipient_id: Yup.number(),
       deliverer_id: Yup.number(),
       signature_id: Yup.number(),
-      product: Yup.string()
+      product: Yup.string(),
     });
 
     if (!(await schemaBody.isValid(req.body))) {
@@ -174,7 +173,7 @@ class OrderController {
     const {
       deliverer_id: newDeliverer,
       recipient_id: newRecipient,
-      signature_id: newSignature
+      signature_id: newSignature,
     } = req.body;
 
     // Busca entregador com id passado via body
@@ -206,7 +205,7 @@ class OrderController {
       product,
       canceled_at,
       start_date,
-      end_date
+      end_date,
     } = await order.update(req.body);
 
     return res.json({
@@ -217,7 +216,7 @@ class OrderController {
       product,
       canceled_at,
       start_date,
-      end_date
+      end_date,
     });
 
     // TODO: TESTAR SE É POSSÍVEL ALTERAR START_DATE E END_DATE
@@ -227,7 +226,7 @@ class OrderController {
   async destroy(req, res) {
     // Validação do id passado via params
     const schema = Yup.object().shape({
-      orderId: Yup.number().required()
+      orderId: Yup.number().required(),
     });
 
     if (!(await schema.isValid(req.params))) {
@@ -240,20 +239,20 @@ class OrderController {
     const order = await Order.findOne({
       where: {
         id: orderId,
-        canceled_at: null
+        canceled_at: null,
       },
       include: [
         {
           model: Deliverer,
           as: 'deliverer',
-          attributes: ['name', 'email']
+          attributes: ['name', 'email'],
         },
         {
           model: Recipient,
           as: 'recipient',
-          attributes: ['name', 'street', 'number', 'city', 'state', 'zipcode']
-        }
-      ]
+          attributes: ['name', 'street', 'number', 'city', 'state', 'zipcode'],
+        },
+      ],
     });
 
     if (!order)
@@ -271,7 +270,7 @@ class OrderController {
     // Envia email avisando o entregador do cancelamento
     await Queue.add(CancellationMail.key, {
       deliverer,
-      recipient
+      recipient,
     });
 
     return res.json({ message: 'Encomenda cancelada com sucesso' });

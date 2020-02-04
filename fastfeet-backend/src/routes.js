@@ -1,18 +1,16 @@
 import { Router } from 'express';
 import multer from 'multer';
 
-import multerConfig from './config/multer';
-
-import UserController from './app/controllers/UserController';
-import SessionController from './app/controllers/SessionController';
-import RecipientController from './app/controllers/RecipientController';
 import DelivererController from './app/controllers/DelivererController';
-import OrderController from './app/controllers/OrderController';
-import FileController from './app/controllers/FileController';
 import DeliveryController from './app/controllers/DeliveryController';
 import DeliveryProblemController from './app/controllers/DeliveryProblemController';
-
+import FileController from './app/controllers/FileController';
+import OrderController from './app/controllers/OrderController';
+import RecipientController from './app/controllers/RecipientController';
+import SessionController from './app/controllers/SessionController';
+import UserController from './app/controllers/UserController';
 import authMiddleware from './app/middlewares/authMiddleware';
+import multerConfig from './config/multer';
 
 const routes = new Router();
 // Inicializa o módulo de uploads

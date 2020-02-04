@@ -6,7 +6,7 @@ module.exports = {
         type: Sequelize.INTEGER,
         allowNull: false,
         autoIncrement: true,
-        primaryKey: true
+        primaryKey: true,
       },
       recipient_id: {
         type: Sequelize.INTEGER,
@@ -14,7 +14,7 @@ module.exports = {
         // Relacionamento com a tabela Endereços
         references: { model: 'recipients', key: 'id' },
         onUpdate: 'CASCADE',
-        onDelete: 'SET NULL'
+        onDelete: 'SET NULL',
       },
       deliverer_id: {
         type: Sequelize.INTEGER,
@@ -22,27 +22,27 @@ module.exports = {
         // Relacionamento com a tabela Entregadores
         references: { model: 'deliverers', key: 'id' },
         onUpdate: 'CASCADE',
-        onDelete: 'SET NULL'
+        onDelete: 'SET NULL',
       },
       product: {
         type: Sequelize.STRING,
-        allowNull: false
+        allowNull: false,
       },
       canceled_at: Sequelize.DATE,
       start_date: Sequelize.DATE,
       end_date: Sequelize.DATE,
       created_at: {
         type: Sequelize.DATE,
-        allowNull: false
+        allowNull: false,
       },
       updated_at: {
         type: Sequelize.DATE,
-        allowNull: false
-      }
+        allowNull: false,
+      },
     });
   },
 
   down: queryInterface => {
     return queryInterface.dropTable('orders');
-  }
+  },
 };

@@ -1,5 +1,5 @@
-import Sequelize, { Model } from 'sequelize';
 import bcrypt from 'bcrypt';
+import Sequelize, { Model } from 'sequelize';
 
 // Model de Usuários (admin)
 class User extends Model {
@@ -9,10 +9,10 @@ class User extends Model {
         name: Sequelize.STRING,
         email: Sequelize.STRING,
         password: Sequelize.VIRTUAL,
-        password_hash: Sequelize.STRING
+        password_hash: Sequelize.STRING,
       },
       {
-        sequelize
+        sequelize,
       }
     );
 
