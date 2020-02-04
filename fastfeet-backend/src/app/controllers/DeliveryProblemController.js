@@ -9,6 +9,7 @@ import Queue from '../../lib/Queue';
 import CancellationMail from '../jobs/CancellationMail';
 
 class DeliveryProblemController {
+  // Lista todas encomendas com problemas
   async index(req, res) {
     const deliveries = await DeliveryProblem.findAll({
       attributes: ['id', 'description'],
@@ -36,7 +37,9 @@ class DeliveryProblemController {
     return res.json(deliveries);
   }
 
+  // Lista todos problemas da encomenda com o id passado via params
   async show(req, res) {
+    // Validação do id passado via params
     const schema = Yup.object().shape({
       orderId: Yup.number().required()
     });
@@ -45,8 +48,11 @@ class DeliveryProblemController {
       return res.status(400).json({ message: 'Erro de validação' });
     }
 
-    const deliveries = await DeliveryProblem.findAll({
-      where: { order_id: req.params.orderId },
+    const { orderId } = req.params;
+
+    // Busca problemas com encomenda com o id passado via params
+    const problems = await DeliveryProblem.findAll({
+      where: { order_id: orderId },
       attributes: ['id', 'description'],
       include: [
         {
@@ -66,15 +72,17 @@ class DeliveryProblemController {
       ]
     });
 
-    if (deliveries.length === 0)
+    if (problems.length === 0)
       return res
         .status(400)
         .json({ message: 'Nenhum problema com a encomenda' });
 
-    return res.json(deliveries);
+    return res.json(problems);
   }
 
+  // Cadastra problema com a encomenda com o id passado via params
   async store(req, res) {
+    // Validação do id passado via params
     const schema = Yup.object().shape({
       orderId: Yup.number().required()
     });
@@ -85,6 +93,7 @@ class DeliveryProblemController {
 
     const { orderId } = req.params;
 
+    // Busca encomenda com o id passado via params
     const order = await Order.findOne({
       where: {
         id: orderId,
@@ -109,7 +118,9 @@ class DeliveryProblemController {
     });
   }
 
+  // Altera dados do problema com o id passado via params
   async update(req, res) {
+    // Validação do id passado via params
     const schema = Yup.object().shape({
       problemId: Yup.number().required()
     });
@@ -118,7 +129,10 @@ class DeliveryProblemController {
       return res.status(400).json({ message: 'Erro de validação' });
     }
 
-    const problem = await DeliveryProblem.findByPk(req.params.problemId);
+    const { problemId } = req.params;
+
+    // Busca problema com o id passado via params
+    const problem = await DeliveryProblem.findByPk(problemId);
 
     if (!problem)
       return res
@@ -134,7 +148,9 @@ class DeliveryProblemController {
     });
   }
 
+  // Cancela encomenda relacionada ao problema com o id passado via params
   async destroy(req, res) {
+    // Validação do id passado via params
     const schema = Yup.object().shape({
       problemId: Yup.number().required()
     });
@@ -143,13 +159,17 @@ class DeliveryProblemController {
       return res.status(400).json({ message: 'Erro de validação' });
     }
 
-    const problem = await DeliveryProblem.findByPk(req.params.problemId);
+    const { problemId } = req.params;
+
+    // Busca problema com o id passado via params
+    const problem = await DeliveryProblem.findByPk(problemId);
 
     if (!problem)
       return res
         .status(400)
         .json({ message: 'Entrega com problema não encontrada' });
 
+    // Busca encomenda com o id referenciado em problem.order_id
     const order = await Order.findOne({
       where: {
         id: problem.order_id,
@@ -174,12 +194,14 @@ class DeliveryProblemController {
         .status(400)
         .json({ message: 'Encomenda não cadastrada ou cancelada' });
 
+    // Seta data de cancelamento
     order.canceled_at = new Date();
 
     await order.save();
 
     const { recipient, deliverer } = order;
 
+    // Envia email avisando o entregador do cancelamento
     await Queue.add(CancellationMail.key, {
       deliverer,
       recipient

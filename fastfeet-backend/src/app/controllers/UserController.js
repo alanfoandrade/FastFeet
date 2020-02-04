@@ -3,6 +3,7 @@ import * as Yup from 'yup';
 import User from '../models/User';
 
 class UserController {
+  // Lista todos usuários (admin) cadastrados
   async index(req, res) {
     const users = await User.findAll({
       attributes: ['id', 'name', 'email']
@@ -14,7 +15,9 @@ class UserController {
     return res.json(users);
   }
 
+  // Exibe usuário (admin) com o id passado via params
   async show(req, res) {
+    // Validação do id passado via params
     const schema = Yup.object().shape({
       userId: Yup.number().required()
     });
@@ -23,7 +26,10 @@ class UserController {
       return res.status(400).json({ message: 'Erro de validação' });
     }
 
-    const user = await User.findByPk(req.params.userId, {
+    const { userId } = req.params;
+
+    // Busca usuário com id passado via params
+    const user = await User.findByPk(userId, {
       attributes: ['id', 'name', 'email']
     });
 
@@ -33,7 +39,9 @@ class UserController {
     return res.json(user);
   }
 
+  // Cadastra usuário (admin)
   async store(req, res) {
+    // Validação dos dados do body
     const schema = Yup.object().shape({
       name: Yup.string().required(),
       email: Yup.string()
@@ -48,9 +56,11 @@ class UserController {
       return res.status(400).json({ message: 'Erro de validação' });
     }
 
+    const { email: newEmail } = req.body;
+
     // Verifica se email já está cadastrado
     const emailExists = await User.findOne({
-      where: { email: req.body.email }
+      where: { email: newEmail }
     });
 
     if (emailExists) {
@@ -62,7 +72,9 @@ class UserController {
     return res.json({ id, name, email });
   }
 
+  // Altera dados do usuário (admin) logado
   async update(req, res) {
+    // Validação dos dados do body
     const schema = Yup.object().shape({
       name: Yup.string(),
       email: Yup.string().email(),
@@ -83,6 +95,7 @@ class UserController {
 
     const { email: newEmail, oldPassword } = req.body;
 
+    // req.userId = id do usuário logado, anexado ao token
     const user = await User.findByPk(req.userId);
 
     // Caso for alterar email, verifica se novo email já está cadastrado
@@ -106,12 +119,15 @@ class UserController {
     return res.json({ id, name, email });
   }
 
+  // Exclui cadastro do usuário (admin) logado
   async destroy(req, res) {
+    // req.userid = id do usuário logado, anexado ao token
     const user = await User.findByPk(req.userId);
 
     if (!user)
       return res.status(400).json({ message: 'Usuário não cadastrado' });
 
+    // Apaga registro do banco
     await user.destroy();
 
     return res.json({ message: 'Usuário excluído com sucesso' });

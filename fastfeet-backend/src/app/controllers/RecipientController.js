@@ -3,6 +3,7 @@ import * as Yup from 'yup';
 import Recipient from '../models/Recipient';
 
 class RecipientController {
+  // Lista todos endereços cadastrados
   async index(req, res) {
     const recipients = await Recipient.findAll({
       attributes: [
@@ -25,7 +26,9 @@ class RecipientController {
     return res.json(recipients);
   }
 
+  // Lista endereço com o id passado via params
   async show(req, res) {
+    // Validação do id passado via params
     const schema = Yup.object().shape({
       recipientId: Yup.number().required()
     });
@@ -34,7 +37,10 @@ class RecipientController {
       return res.status(400).json({ message: 'Erro de validação' });
     }
 
-    const recipient = await Recipient.findByPk(req.params.recipientId, {
+    const { recipientId } = req.params;
+
+    // Busca endereço com id passado via params
+    const recipient = await Recipient.findByPk(recipientId, {
       attributes: [
         'id',
         'name',
@@ -53,7 +59,9 @@ class RecipientController {
     return res.json(recipient);
   }
 
+  // Cadastra endereço
   async store(req, res) {
+    // Validação dos dados do body
     const schema = Yup.object().shape({
       name: Yup.string().required(),
       street: Yup.string().required(),
@@ -82,7 +90,9 @@ class RecipientController {
     return res.json({ id, name, street, number, compl, state, city, zipcode });
   }
 
+  // Altera dados do endereço com o id passado via params
   async update(req, res) {
+    // Validação do id passado via params
     const schemaParams = Yup.object().shape({
       recipientId: Yup.number().required()
     });
@@ -91,6 +101,7 @@ class RecipientController {
       return res.status(400).json({ message: 'Erro de validação' });
     }
 
+    // Validação dos dados do body
     const schemaBody = Yup.object().shape({
       name: Yup.string(),
       street: Yup.string(),
@@ -105,7 +116,10 @@ class RecipientController {
       return res.status(400).json({ message: 'Erro de validação' });
     }
 
-    const recipient = await Recipient.findByPk(req.params.recipientId);
+    const { recipientId } = req.params;
+
+    // Busca endereço com id passado via params
+    const recipient = await Recipient.findByPk(recipientId);
 
     if (!recipient)
       return res.status(400).json({ message: 'Destinatário não cadastrado' });
@@ -124,7 +138,9 @@ class RecipientController {
     return res.json({ id, name, street, number, compl, state, city, zipcode });
   }
 
+  // Exclui cadastro do endereço com o id passado via params
   async destroy(req, res) {
+    // Validação do id passado via params
     const schema = Yup.object().shape({
       recipientId: Yup.number().required()
     });
@@ -133,11 +149,15 @@ class RecipientController {
       return res.status(400).json({ message: 'Erro de validação' });
     }
 
-    const recipient = await Recipient.findByPk(req.params.recipientId);
+    const { recipientId } = req.params;
+
+    // Busca endereço com id passado via params
+    const recipient = await Recipient.findByPk(recipientId);
 
     if (!recipient)
       return res.status(400).json({ message: 'Destinatário não cadastrado' });
 
+    // Apaga registro do banco
     await recipient.destroy();
 
     return res.json({ message: 'Destinatário excluído com sucesso' });

@@ -1,6 +1,7 @@
 import File from '../models/File';
 
 class FileController {
+  // Cadastra nome e caminho referente ao arquivo armazenado na pasta tmp
   async store(req, res) {
     const { originalname: name, filename: path } = req.file;
 

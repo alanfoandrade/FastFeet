@@ -13,7 +13,9 @@ import Order from '../models/Order';
 import File from '../models/File';
 
 class DeliveryController {
+  // Lista todas entregas não concluídas para o entregador com o id passado via params
   async index(req, res) {
+    // Validação do id passado via params
     const schema = Yup.object().shape({
       delivererId: Yup.number().required()
     });
@@ -22,9 +24,11 @@ class DeliveryController {
       return res.status(400).json({ message: 'Erro de validação' });
     }
 
+    const { delivererId } = req.params;
+
     const orders = await Order.findAll({
       where: {
-        deliverer_id: req.params.delivererId,
+        deliverer_id: delivererId,
         canceled_at: null,
         end_date: null
       },
@@ -37,7 +41,9 @@ class DeliveryController {
     return res.json(orders);
   }
 
+  // Lista as entregas já concluídas pelo entregador com o id passado via params
   async show(req, res) {
+    // Validação do id passado via params
     const schema = Yup.object().shape({
       delivererId: Yup.number().required()
     });
@@ -46,9 +52,12 @@ class DeliveryController {
       return res.status(400).json({ message: 'Erro de validação' });
     }
 
+    const { delivererId } = req.params;
+
+    // Busca encomendas já concluídas pelo entregador com id passado via params
     const orders = await Order.findAll({
       where: {
-        deliverer_id: req.params.delivererId,
+        deliverer_id: delivererId,
         canceled_at: null,
         end_date: {
           [Op.not]: null
@@ -70,7 +79,9 @@ class DeliveryController {
     return res.json(orders);
   }
 
+  // Cadastra retirada da encomenda com o id passado via params
   async store(req, res) {
+    // Validação do id passado via params
     const schema = Yup.object().shape({
       orderId: Yup.number().required()
     });
@@ -79,9 +90,12 @@ class DeliveryController {
       return res.status(400).json({ message: 'Erro de validação' });
     }
 
+    const { orderId } = req.params;
+
+    // Busca encomenda com o id passado via params
     const order = await Order.findOne({
       where: {
-        id: req.params.orderId,
+        id: orderId,
         canceled_at: null,
         end_date: null
       }
@@ -92,6 +106,7 @@ class DeliveryController {
         .status(400)
         .json({ message: 'Encomenda não cadastrada, finalizada ou cancelada' });
 
+    // Horário atual
     const timeNow = new Date();
 
     // Início do horário comercial 08:00
@@ -109,6 +124,7 @@ class DeliveryController {
       });
     }
 
+    // Verifica quantas retiradas foram feitas hoje
     const withdrawCount = await Order.findAndCountAll({
       where: {
         deliverer_id: order.deliverer_id,
@@ -118,12 +134,14 @@ class DeliveryController {
       }
     });
 
+    // Limite de 5 retiradas diárias
     if (withdrawCount.count >= 5) {
       return res
         .status(400)
         .json({ message: 'Limite de retiradas diárias atingido' });
     }
 
+    // Seta data de retirada da encomenda
     order.start_date = new Date();
 
     const { id, recipient_id, product, start_date } = await order.save();
@@ -137,7 +155,9 @@ class DeliveryController {
     });
   }
 
+  // Confirma entrega da encomenda com o id passado via params
   async update(req, res) {
+    // Validação do id passado via params
     const schemaParams = Yup.object().shape({
       orderId: Yup.number().required()
     });
@@ -146,6 +166,7 @@ class DeliveryController {
       return res.status(400).json({ message: 'Erro de validação' });
     }
 
+    // Validação dos dados do body
     const schemaBody = Yup.object().shape({
       signature_id: Yup.number().required()
     });
@@ -154,7 +175,10 @@ class DeliveryController {
       return res.status(400).json({ message: 'Erro de validação' });
     }
 
-    const order = await Order.findByPk(req.params.orderId);
+    const { orderId } = req.params;
+
+    // Busca encomenda com o id passado via params
+    const order = await Order.findByPk(orderId);
 
     if (!order)
       return res.status(400).json({ message: 'Entrega não cadastrada' });
@@ -194,7 +218,9 @@ class DeliveryController {
     });
   }
 
+  // Cancela retirada da encomenda com o id passado via params
   /* async destroy(req, res) {
+    // Validação do id passado via params
     const schema = Yup.object().shape({
       orderId: Yup.number().required()
     });
@@ -203,9 +229,12 @@ class DeliveryController {
       return res.status(400).json({ message: 'Erro de validação' });
     }
 
+    const { orderId } = req.params;
+
+    // Busca encomenda com o id passado via params
     const order = await Order.findOne({
       where: {
-        id: req.params.orderId,
+        id: orderId,
         canceled_at: null
       }
     });
@@ -215,6 +244,7 @@ class DeliveryController {
         .status(400)
         .json({ message: 'Entrega não cadastrada ou cancelada' });
 
+    // Apaga data de retirada da encomenda
     order.start_date = null;
 
     await order.save();
