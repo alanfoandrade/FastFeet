@@ -1,7 +1,8 @@
+import './bootstrap';
+
 import * as Sentry from '@sentry/node';
 import express from 'express';
 import { resolve } from 'path';
-import 'dotenv/config';
 import Youch from 'youch';
 
 import 'express-async-errors';
