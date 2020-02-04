@@ -1,11 +1,13 @@
 import Sequelize, { Model } from 'sequelize';
 
+// Model de Arquivos
 class File extends Model {
   static init(sequelize) {
     super.init(
       {
         name: Sequelize.STRING,
         path: Sequelize.STRING,
+        // Caminho para o arquivo armazenado na pasta tmp
         url: {
           type: Sequelize.VIRTUAL,
           get() {

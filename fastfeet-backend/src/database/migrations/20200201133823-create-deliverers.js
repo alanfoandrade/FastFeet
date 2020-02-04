@@ -1,3 +1,4 @@
+// Criação da tabela de Entregadores
 module.exports = {
   up: (queryInterface, Sequelize) => {
     return queryInterface.createTable('deliverers', {

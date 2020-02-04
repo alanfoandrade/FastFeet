@@ -15,6 +15,7 @@ import DeliveryProblemController from './app/controllers/DeliveryProblemControll
 import authMiddleware from './app/middlewares/authMiddleware';
 
 const routes = new Router();
+// Inicializa o módulo de uploads
 const upload = multer(multerConfig);
 
 // Unauthenticated Routes

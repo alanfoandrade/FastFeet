@@ -1,5 +1,6 @@
 import Sequelize, { Model } from 'sequelize';
 
+// Model de Encomendas
 class Order extends Model {
   static init(sequelize) {
     super.init(
@@ -18,14 +19,17 @@ class Order extends Model {
   }
 
   static associate(models) {
+    // Relacionamento de signature_id com a tabela de Arquivos
     this.belongsTo(models.File, {
       foreignKey: 'signature_id',
       as: 'signature'
     });
+    // Relacionamento de recipient_id com a tabela de Endereços
     this.belongsTo(models.Recipient, {
       foreignKey: 'recipient_id',
       as: 'recipient'
     });
+    // Relacionamento de deliverer_id com a tabela de Entregadores
     this.belongsTo(models.Deliverer, {
       foreignKey: 'deliverer_id',
       as: 'deliverer'

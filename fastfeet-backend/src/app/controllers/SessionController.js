@@ -4,6 +4,7 @@ import * as Yup from 'yup';
 import User from '../models/User';
 import authConfig from '../../config/auth';
 
+// Controller de Sessões (autenticação)
 class SessionController {
   // Cria sessão autenticada e retorna o token
   async store(req, res) {

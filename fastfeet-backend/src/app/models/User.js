@@ -1,6 +1,7 @@
 import Sequelize, { Model } from 'sequelize';
 import bcrypt from 'bcrypt';
 
+// Model de Usuários (admin)
 class User extends Model {
   static init(sequelize) {
     super.init(
@@ -15,6 +16,7 @@ class User extends Model {
       }
     );
 
+    // Criptografa senha antes de salvar registros
     this.addHook('beforeSave', async user => {
       if (user.password) {
         user.password_hash = await bcrypt.hash(user.password, 8);
@@ -24,6 +26,7 @@ class User extends Model {
     return this;
   }
 
+  // Método para verificação da senha criptografada
   checkPassword(password) {
     return bcrypt.compare(password, this.password_hash);
   }

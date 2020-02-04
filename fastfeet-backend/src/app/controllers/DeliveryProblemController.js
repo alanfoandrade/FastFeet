@@ -8,6 +8,7 @@ import Recipient from '../models/Recipient';
 import Queue from '../../lib/Queue';
 import CancellationMail from '../jobs/CancellationMail';
 
+// Controller de Problemas na Entrega
 class DeliveryProblemController {
   // Lista todas encomendas com problemas
   async index(req, res) {

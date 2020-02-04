@@ -1,3 +1,4 @@
+// Criação da tabela de Usuários (admin)
 module.exports = {
   up: (queryInterface, Sequelize) => {
     return queryInterface.createTable('users', {

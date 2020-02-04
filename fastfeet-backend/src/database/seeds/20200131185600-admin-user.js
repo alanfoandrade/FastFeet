@@ -1,5 +1,6 @@
 const bcrypt = require('bcrypt');
 
+// Cria Usuário (admin) padrão no banco
 module.exports = {
   up: queryInterface => {
     return queryInterface.bulkInsert(

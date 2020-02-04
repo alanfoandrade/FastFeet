@@ -1,3 +1,4 @@
+// Criação da tabela de Endereços
 module.exports = {
   up: (queryInterface, Sequelize) => {
     return queryInterface.createTable('recipients', {

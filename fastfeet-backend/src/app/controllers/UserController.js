@@ -2,6 +2,7 @@ import * as Yup from 'yup';
 
 import User from '../models/User';
 
+// Controller de Usuários (admin)
 class UserController {
   // Lista todos usuários (admin) cadastrados
   async index(req, res) {

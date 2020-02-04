@@ -1,3 +1,4 @@
+// Criação da tabela de Problemas na Entrega
 module.exports = {
   up: (queryInterface, Sequelize) => {
     return queryInterface.createTable('delivery_problems', {
@@ -10,6 +11,7 @@ module.exports = {
       order_id: {
         type: Sequelize.INTEGER,
         allowNull: false,
+        // Relacionamento com a tabela de Entregas
         references: { model: 'orders', key: 'id' },
         onUpdate: 'CASCADE',
         onDelete: 'SET NULL'

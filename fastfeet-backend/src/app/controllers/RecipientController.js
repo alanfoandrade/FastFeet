@@ -2,6 +2,7 @@ import * as Yup from 'yup';
 
 import Recipient from '../models/Recipient';
 
+// Controller de Endereços
 class RecipientController {
   // Lista todos endereços cadastrados
   async index(req, res) {

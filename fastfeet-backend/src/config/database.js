@@ -1,5 +1,6 @@
 require('dotenv/config');
 
+// Configuração de conexão com o banco Postgres, utilizada em app.js
 module.exports = {
   dialect: 'postgres',
   host: process.env.DB_HOST,

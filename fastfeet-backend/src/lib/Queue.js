@@ -6,6 +6,7 @@ import redisConfig from '../config/redis';
 
 const jobs = [NewOrderMail, CancellationMail];
 
+// Configuração do serviço de Filas Bee-Queue
 class Queue {
   constructor() {
     this.queues = {};
@@ -13,6 +14,7 @@ class Queue {
     this.init();
   }
 
+  // Cria as filas no redis, contendo nome e método de cada job
   init() {
     jobs.forEach(({ key, handle }) => {
       this.queues[key] = {
@@ -24,10 +26,12 @@ class Queue {
     });
   }
 
+  // Adiciona cada job em sua fila
   add(queue, job) {
     return this.queues[queue].bee.createJob(job).save();
   }
 
+  // Processa os métodos de cada job na fila, job.key é o nome de cada job
   processQueue() {
     jobs.forEach(job => {
       const { bee, handle } = this.queues[job.key];

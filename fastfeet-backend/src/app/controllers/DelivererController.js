@@ -3,6 +3,7 @@ import * as Yup from 'yup';
 import Deliverer from '../models/Deliverer';
 import File from '../models/File';
 
+// Controller de Entregadores
 class DelivererController {
   // Lista todos entregadores cadastrados
   async index(req, res) {

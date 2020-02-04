@@ -1,3 +1,4 @@
+// Criação da tabela de Arquivos
 module.exports = {
   up: (queryInterface, Sequelize) => {
     return queryInterface.createTable('files', {

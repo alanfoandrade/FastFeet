@@ -12,6 +12,7 @@ import {
 import Order from '../models/Order';
 import File from '../models/File';
 
+// Controller de Entregas
 class DeliveryController {
   // Lista todas entregas não concluídas para o entregador com o id passado via params
   async index(req, res) {
@@ -26,6 +27,7 @@ class DeliveryController {
 
     const { delivererId } = req.params;
 
+    // Busca encomendas cadastradas para o entregador com o id passado via params
     const orders = await Order.findAll({
       where: {
         deliverer_id: delivererId,

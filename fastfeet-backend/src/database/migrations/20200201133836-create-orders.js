@@ -1,3 +1,4 @@
+// Criação da tabela de Encomendas
 module.exports = {
   up: (queryInterface, Sequelize) => {
     return queryInterface.createTable('orders', {
@@ -10,6 +11,7 @@ module.exports = {
       recipient_id: {
         type: Sequelize.INTEGER,
         allowNull: false,
+        // Relacionamento com a tabela Endereços
         references: { model: 'recipients', key: 'id' },
         onUpdate: 'CASCADE',
         onDelete: 'SET NULL'
@@ -17,6 +19,7 @@ module.exports = {
       deliverer_id: {
         type: Sequelize.INTEGER,
         allowNull: false,
+        // Relacionamento com a tabela Entregadores
         references: { model: 'deliverers', key: 'id' },
         onUpdate: 'CASCADE',
         onDelete: 'SET NULL'

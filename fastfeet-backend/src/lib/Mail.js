@@ -5,10 +5,12 @@ import nodemailerHbs from 'nodemailer-express-handlebars';
 
 import mailConfig from '../config/mail';
 
+// Configuração do serviço de email Nodemailer
 class Mail {
   constructor() {
     const { host, port, secure, auth } = mailConfig;
 
+    // Cria conexão do nodemailer
     this.transporter = nodemailer.createTransport({
       host,
       port,
@@ -19,6 +21,7 @@ class Mail {
     this.configureTemplates();
   }
 
+  // Método de configuração dos templates do Handlebars
   configureTemplates() {
     const viewPath = resolve(__dirname, '..', 'app', 'views', 'emails');
 
@@ -37,6 +40,7 @@ class Mail {
     );
   }
 
+  // Método para envio de emails
   sendMail(message) {
     return this.transporter.sendMail({
       ...mailConfig.default,

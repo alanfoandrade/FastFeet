@@ -9,6 +9,7 @@ import Queue from '../../lib/Queue';
 import NewOrderMail from '../jobs/NewOrderMail';
 import CancellationMail from '../jobs/CancellationMail';
 
+// Cadastro de Encomendas
 class OrderController {
   // Lista todas encomendas cadastradas
   async index(req, res) {
