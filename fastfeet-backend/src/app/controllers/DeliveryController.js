@@ -194,7 +194,7 @@ class DeliveryController {
     });
   }
 
-  async destroy(req, res) {
+  /* async destroy(req, res) {
     const schema = Yup.object().shape({
       orderId: Yup.number().required()
     });
@@ -220,7 +220,7 @@ class DeliveryController {
     await order.save();
 
     return res.json({ message: 'Entrega cancelada com sucesso' });
-  }
+  } */
 }
 
 export default new DeliveryController();

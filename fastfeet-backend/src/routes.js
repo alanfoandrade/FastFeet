@@ -36,7 +36,7 @@ routes.get('/delivery/:delivererId', DeliveryController.index);
 routes.get('/delivery/:delivererId/delivered', DeliveryController.show);
 routes.post('/delivery/:orderId', DeliveryController.store);
 routes.patch('/delivery/:orderId', DeliveryController.update);
-routes.delete('/delivery/:orderId', DeliveryController.destroy);
+// routes.delete('/delivery/:orderId', DeliveryController.destroy);
 
 // DeliveryProblem Controller
 routes.post('/delivery/:orderId/problems', DeliveryProblemController.store);

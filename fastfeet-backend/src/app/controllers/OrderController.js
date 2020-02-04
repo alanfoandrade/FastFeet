@@ -16,11 +16,17 @@ class OrderController {
         'id',
         'recipient_id',
         'deliverer_id',
-        'signature_id',
         'product',
         'canceled_at',
         'start_date',
         'end_date'
+      ],
+      include: [
+        {
+          model: File,
+          as: 'signature',
+          attributes: ['name', 'path', 'url']
+        }
       ]
     });
 
@@ -49,6 +55,13 @@ class OrderController {
         'canceled_at',
         'start_date',
         'end_date'
+      ],
+      include: [
+        {
+          model: File,
+          as: 'signature',
+          attributes: ['name', 'path', 'url']
+        }
       ]
     });
 

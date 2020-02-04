@@ -6,7 +6,14 @@ import File from '../models/File';
 class DelivererController {
   async index(req, res) {
     const deliverers = await Deliverer.findAll({
-      attributes: ['id', 'name', 'avatar_id', 'email']
+      attributes: ['id', 'name', 'email'],
+      include: [
+        {
+          model: File,
+          as: 'avatar',
+          attributes: ['name', 'path', 'url']
+        }
+      ]
     });
 
     if (deliverers.length === 0)
@@ -25,7 +32,14 @@ class DelivererController {
     }
 
     const deliverer = await Deliverer.findByPk(req.params.delivererId, {
-      attributes: ['id', 'name', 'avatar_id', 'email']
+      attributes: ['id', 'name', 'email'],
+      include: [
+        {
+          model: File,
+          as: 'avatar',
+          attributes: ['name', 'path', 'url']
+        }
+      ]
     });
 
     if (!deliverer)
