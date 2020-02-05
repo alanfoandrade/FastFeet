@@ -1,4 +1,4 @@
-import bcrypt from 'bcrypt';
+import bcrypt from 'bcryptjs';
 import Sequelize, { Model } from 'sequelize';
 
 // Model de Usuários (admin)

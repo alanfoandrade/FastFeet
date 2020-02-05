@@ -1,4 +1,4 @@
-const bcrypt = require('bcrypt');
+const bcryptjs = require('bcryptjs');
 
 // Cria Usuário (admin) padrão no banco
 module.exports = {
@@ -9,7 +9,7 @@ module.exports = {
         {
           name: 'Distribuidora FastFeet',
           email: 'admin@fastfeet.com',
-          password_hash: bcrypt.hashSync('123456', 8),
+          password_hash: bcryptjs.hashSync('123456', 8),
           created_at: new Date(),
           updated_at: new Date(),
         },
