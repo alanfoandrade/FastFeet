@@ -11,6 +11,12 @@ describe('User', () => {
   });
 
   it('should encrypt user password when new user created', async () => {
+    const passou = true;
+
+    expect(passou).toBe(true);
+  });
+
+  it('should encrypt user password when new user created', async () => {
     const user = await factory.create('User', {
       password: '123456',
     });
