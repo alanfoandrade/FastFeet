@@ -3,17 +3,12 @@ import request from 'supertest';
 
 import app from '../../src/app';
 import factory from '../factories';
+import QueueMock from '../util/QueueMock';
 import truncate from '../util/truncate';
 
 describe('User', () => {
   beforeEach(async () => {
     await truncate();
-  });
-
-  it('should encrypt user password when new user created', async () => {
-    const passou = true;
-
-    expect(passou).toBe(true);
   });
 
   it('should encrypt user password when new user created', async () => {
