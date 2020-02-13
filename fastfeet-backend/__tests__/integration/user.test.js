@@ -3,7 +3,6 @@ import request from 'supertest';
 
 import app from '../../src/app';
 import factory from '../factories';
-import QueueMock from '../util/QueueMock';
 import truncate from '../util/truncate';
 
 describe('User', () => {
@@ -43,5 +42,20 @@ describe('User', () => {
       .send(user);
 
     expect(response.status).toBe(400);
+  });
+
+  it('should be able to authenticate', async () => {
+    const { email } = await factory.create('User', {
+      password: '123456',
+    });
+
+    const response = await request(app)
+      .post('/sessions')
+      .send({
+        email,
+        password: '123456',
+      });
+
+    expect(response.body).toHaveProperty('token');
   });
 });
